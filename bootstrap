@@ -1,0 +1,162 @@
+#!/bin/bash
+
+info() {
+  printf "[\033[00;34mINFO\033[0m] $1\n"
+}
+
+success() {
+  printf "[\033[00;32mOK\033[0m] $1\n"
+}
+
+error() {
+  printf "[\033[00;31mERROR\033[0m] $1\n"
+}
+
+big_info() {
+  printf "\e[34m
+==============================
+$1
+==============================\n\e[m"
+}
+
+bootstrap() {
+  info "start install tools"
+  install_all
+
+  # 必要なくなった
+  # info "start git init"
+  # git_init
+
+  info "start git config"
+  git_config
+
+  info "download Makefile"
+  download_makefile
+
+  info "download deploy script"
+  download_deploy_script
+
+  check
+
+  info "script Done!"
+
+}
+
+git_config() {
+  git config --global user.email "htilcs1115@gmail.com"
+  git config --global user.name "k-nasa"
+
+  git config --global core.editor 'vim -c "set fenc=utf-8"'
+}
+
+install_all() {
+  install_alp
+  install_pt_query_digest
+  install_discordcat
+}
+
+
+install_alp() {
+  info 'Installing alp'
+  wget https://github.com/tkuchiki/alp/releases/download/v1.0.7/alp_linux_amd64.zip
+  unzip alp_linux_amd64.zip
+  sudo mv alp /usr/bin/
+
+  rm alp_linux_amd64.zip
+
+  success "install alp"
+}
+
+install_pt_query_digest() {
+  info 'Install pt-query-digest'
+  wget https://github.com/percona/percona-toolkit/archive/3.0.5-test.tar.gz
+  tar zxvf 3.0.5-test.tar.gz
+  sudo mv ./percona-toolkit-3.0.5-test/bin/pt-query-digest /usr/bin/
+
+  rm 3.0.5-test.tar.gz
+  rm -rf percona-toolkit-3.0.5-test
+
+  success "install pt-query-digest"
+}
+
+install_discordcat() {
+  info 'Install discordcat'
+
+  wget https://github.com/k-nasa/discordcat/releases/download/0.1.0/discordcat_x86_64-unknown-linux-gnu.tar.gz
+  tar -xf discordcat_x86_64-unknown-linux-gnu.tar.gz
+  sudo mv ./discordcat_x86_64-unknown-linux-gnu/discordcat /usr/bin/
+  sudo chmod +x /usr/local/bin/discordcat
+
+  rm discordcat_x86_64-unknown-linux-gnu.tar.gz
+  rm -rf discordcat_x86_64-unknown-linux-gnu
+
+  success "install discordcat"
+}
+
+git_init() {
+  git init
+  ssh-keygen && cat $HOME/.ssh/id_rsa.pub
+
+  printf "\e[34mCopy this SSH key (https://github.com/settings/ssh/new)\e[m\n"
+  while :
+  do
+    read -p "Added SSH key? (y/n)" input
+    if [ "$input" = "y" ]; then
+      echo "Continue to setup!"
+      break
+    elif [ "$input" = "n" ]; then
+      echo "Please Add SSH Key."
+    fi
+  done
+
+  ssh -T git@github.com
+}
+
+checking() {
+  which $1 > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
+    success "$1"
+  else
+    error "$1"
+  fi
+}
+
+file_check() {
+  big_info "file checking!"
+
+  FILES=(bootstrap Makefile deploy deploy_from_local)
+
+  for f in ${FILES[@]}; do
+    if [ -e $f ]; then
+      success "$f exists"
+    else
+      error "$f not exists"
+    fi
+  done
+}
+
+check() {
+  big_info "install checking!"
+
+  COMMANDS=(alp pt-query-digest htop discordcat)
+
+  for c in ${COMMANDS[@]}; do
+    checking $c
+  done
+
+  file_check
+}
+
+download_makefile() {
+  curl -O https://raw.githubusercontent.com/k-nasa/magic-powder/master/Makefile
+}
+
+download_deploy_script() {
+  curl -O https://raw.githubusercontent.com/k-nasa/magic-powder/master/deploy
+  chmod +x deploy
+
+  curl -O https://raw.githubusercontent.com/k-nasa/magic-powder/master/deploy_from_local
+  chmod +x deploy_from_local
+}
+
+bootstrap
