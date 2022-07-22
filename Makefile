@@ -62,11 +62,11 @@ pprof:
 
 .PHONY: application_build
 application_build: ## application build (wip)
-	docker-compose build
+	cd /home/isucon && docker-compose build
 
 .PHONY: application_restart
 application_restart: ## application restart (wip)
-	docker-compose up --build -d
+	cd /home/isucon && docker-compose up --build -d
 
 .PHONY: middleware_restart
 middleware_restart: ## mysqlとnginxのrestart
