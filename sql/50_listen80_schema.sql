@@ -39,6 +39,7 @@ CREATE TABLE `playlist` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 create index `ulid_idx` on `playlist`(`ulid`);
+create index `created_at_desc_idx` on `playlist`(`created_at` DESC);
 
 CREATE TABLE `playlist_song` (
   `playlist_id` BIGINT NOT NULL,
