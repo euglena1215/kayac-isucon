@@ -1,20 +1,20 @@
 #!/bin/bash
 
-warn() {
-  printf "[\033[00;33mWARN\033[0m] $1\n"
+big_info() {
+  printf "\e[34m
+================================================
+$1
+================================================\n\e[m"
 }
 
 BRANCH=$1
-warn "Please implement $0"
 
-echo "cd /home/isucon && \
-git stash && \
-git checkout $BRANCH && \
-git pull origin $BRANCH && \
-make bench"
+# branch 指定がなければ current branch を指定したとみなす
+if [ -z "$BRANCH" ]; then
+  BRANCH=`git rev-parse --abbrev-ref HEAD`
+fi
 
-cd /home/isucon && \
-git stash && \
-git checkout $BRANCH && \
-git pull origin $BRANCH && \
-make bench
+SSH_OPTION="isu-kayac"
+
+big_info "deploy $BRANCH to $SSH_OPTION"
+ssh $SSH_OPTION "sudo -u isucon /home/isucon/deploy_on_remote $BRANCH"
