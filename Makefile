@@ -55,7 +55,7 @@ send_result: ## discordにalpとslowの出力を送信する
 
 .PHONY: mysql
 mysql: ## mysql接続コマンド
-	mysql -h $(DB_HOST) -u $(DB_USER) -p$(DB_PASS) $(DB_NAME)
+	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80
 
 pprof:
 	@go tool pprof -png -output pprof.png http://localhost:6060/debug/pprof/profile && discordcat -f pprof.png --filename pprof.png
