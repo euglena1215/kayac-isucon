@@ -38,11 +38,11 @@ slow: ## スロークエリを見る
 
 .PHONY: slow_on
 slow_on: ## mysqlのslowログをonにする
-	@sudo mysql -e "set global slow_query_log_file = '$(MYSQL_SLOW_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
+	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80 -e "set global slow_query_log_file = '$(MYSQL_SLOW_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
 
 .PHONY: slow_off
 slow_off: ## mysqlのslowログをoffにする
-	@sudo mysql -e "set global slow_query_log = OFF;"
+	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80 -e "set global slow_query_log = OFF;"
 
 .PHONY: show_slow_config
 show_slow_config: ## mysqlのslowログ設定を確認するコマンド
