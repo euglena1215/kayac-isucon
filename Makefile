@@ -4,6 +4,7 @@ APP_DIR := todo
 
 NGINX_LOG := /var/log/nginx/access.log
 MYSQL_SLOW_LOG := /var/log/mysql/slow.log
+WEBAPP_MYSQL_SLOW_LOG := /home/isucon/webapp/mysql/logs/slow.log
 
 MYSQL_CONFIG := /etc/mysql/my.cnf
 NGINX_CONFIG := /etc/nginx/nginx.conf
@@ -25,7 +26,7 @@ help: ## show help
 
 .PHONY: log_reset
 log_reset: ## logファイルを初期化する
-	@sudo cp /dev/null $(MYSQL_SLOW_LOG)
+	@sudo cp /dev/null $(WEBAPP_MYSQL_SLOW_LOG)
 	@sudo cp /dev/null $(NGINX_LOG)
 
 .PHONY: alp
@@ -34,11 +35,11 @@ alp: ## alpのログを見る
 
 .PHONY: slow
 slow: ## スロークエリを見る
-	@sudo pt-query-digest $(MYSQL_SLOW_LOG)
+	@sudo pt-query-digest $(WEBAPP_MYSQL_SLOW_LOG)
 
 .PHONY: slow_on
 slow_on: ## mysqlのslowログをonにする
-	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80 -e "set global slow_query_log_file = './mysql/logs/slow.log'; set global long_query_time = 0; set global slow_query_log = ON;"
+	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80 -e "set global slow_query_log_file = '$(MYSQL_SLOW_LOG)'; set global long_query_time = 0; set global slow_query_log = ON;"
 
 .PHONY: slow_off
 slow_off: ## mysqlのslowログをoffにする
