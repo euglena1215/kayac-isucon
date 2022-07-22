@@ -62,11 +62,11 @@ pprof:
 
 .PHONY: application_build
 application_build: ## application build (wip)
-	@echo "Please implement!!"
+	docker-compose build
 
 .PHONY: application_restart
 application_restart: ## application restart (wip)
-	@echo "Please implement!!"
+	docker-compose up --build -d
 
 .PHONY: middleware_restart
 middleware_restart: ## mysqlとnginxのrestart
