@@ -68,13 +68,8 @@ application_build: ## application build (wip)
 application_restart: ## application restart (wip)
 	cd /home/isucon && docker-compose up --build -d
 
-.PHONY: middleware_restart
-middleware_restart: ## mysqlとnginxのrestart
-	sudo systemctl restart mysql
-	sudo systemctl restart nginx
-
 .PHONY: restart
-restart: application_restart middleware_restart ## application, mysql, nginxのリスタート
+restart: application_restart
 
 .PHONY: bench
 bench: log_reset application_build restart slow_on ## bench回す前に実行するコマンド(これで全ての前処理が完了する状態を作る)
