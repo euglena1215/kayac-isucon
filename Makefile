@@ -38,7 +38,7 @@ slow: ## スロークエリを見る
 
 .PHONY: slow_on
 slow_on: ## mysqlのslowログをonにする
-	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80 -e "set global slow_query_log_file = '/mysql/logs/slow.log'; set global long_query_time = 0; set global slow_query_log = ON;"
+	mysql -uroot -proot --host 127.0.0.1 --port 13306 isucon_listen80 -e "set global slow_query_log_file = './mysql/logs/slow.log'; set global long_query_time = 0; set global slow_query_log = ON;"
 
 .PHONY: slow_off
 slow_off: ## mysqlのslowログをoffにする
